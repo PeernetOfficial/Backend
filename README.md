@@ -34,6 +34,10 @@ In order to sign the executable use the `signtool` that is part of the [Windows 
 signtool sign /a /fd SHA256 Cmd.exe
 ```
 
+### Other Dependencies
+
+For GeoIP support, download the free "GeoLite2-City" database from [MaxMind](https://www.maxmind.com/en/accounts/current/geoip/downloads) (requires an account). Extract it to its default target location `data/GeoLite2-City.mmdb`.
+
 ## Use
 
 Simply start it and then use the listed commands:
