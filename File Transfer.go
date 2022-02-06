@@ -15,8 +15,8 @@ import (
 
 	"github.com/PeernetOfficial/core"
 	"github.com/PeernetOfficial/core/protocol"
-	"github.com/PeernetOfficial/core/udt"
 	"github.com/PeernetOfficial/core/warehouse"
+	"github.com/PeernetOfficial/kcp"
 )
 
 // transferCompareFile downloads a file from a remote peer and compares it with the same file in the local warehouse.
@@ -155,23 +155,23 @@ func translateTerminateReason(reason int) string {
 	case 3:
 		return "Sequence invalidation or expiration (upstream)"
 
-	case udt.TerminateReasonListenerClosed:
+	case kcp.TerminateReasonListenerClosed:
 		return "Listener: The listener.Close function was called."
-	case udt.TerminateReasonLingerTimerExpired:
+	case kcp.TerminateReasonLingerTimerExpired:
 		return "Socket: The linger timer expired."
-	case udt.TerminateReasonConnectTimeout:
+	case kcp.TerminateReasonConnectTimeout:
 		return "Socket: The connection timed out when sending the initial handshake."
-	case udt.TerminateReasonRemoteSentShutdown:
+	case kcp.TerminateReasonRemoteSentShutdown:
 		return "Remote peer sent a shutdown message."
-	case udt.TerminateReasonSocketClosed:
+	case kcp.TerminateReasonSocketClosed:
 		return "Send: Socket closed. Called udtSocket.Close()."
-	case udt.TerminateReasonInvalidPacketIDAck:
+	case kcp.TerminateReasonInvalidPacketIDAck:
 		return "Send: Invalid packet ID received in ACK message."
-	case udt.TerminateReasonInvalidPacketIDNak:
+	case kcp.TerminateReasonInvalidPacketIDNak:
 		return "Send: Invalid packet ID received in NAK message."
-	case udt.TerminateReasonCorruptPacketNak:
+	case kcp.TerminateReasonCorruptPacketNak:
 		return "Send: Invalid NAK packet received."
-	case udt.TerminateReasonSignal:
+	case kcp.TerminateReasonSignal:
 		return "Send: Terminate signal. Called udtSocket.Terminate()."
 	default:
 		return "Unknown."
