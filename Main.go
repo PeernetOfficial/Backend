@@ -7,6 +7,7 @@ Author:     Peter Kleissner
 package main
 
 import (
+	_ "embed" // Required for embedding the default Config file
 	"fmt"
 	"os"
 
@@ -16,6 +17,9 @@ import (
 
 const configFile = "Config.yaml"
 const appName = "Peernet Browser"
+
+//go:embed "Config Default.yaml"
+var ConfigDefault []byte
 
 var config struct {
 	// Warning: These settings are currently overwritten (deleted) when the config file is updated by core.
@@ -30,6 +34,10 @@ var config struct {
 	APITimeoutWrite    string    `yaml:"APITimeoutWrite"`    // The maximum duration before timing out writes of the response. This includes processing time and is therefore the max time any HTTP function may take.
 	APIKey             uuid.UUID `yaml:"APIKey"`             // API key. Empty UUID 00000000-0000-0000-0000-000000000000 = not used.
 	DebugAPI           bool      `yaml:"DebugAPI"`           // Enables the debug API which allows profiling. Do not enable in production. Only available if compiled with debug tag.
+
+	// Update
+	UpdateFolder string `yaml:"UpdateFolder"` // Folder to temporarily store update files
+	PluginFolder string `yaml:"PluginFolder"` // Plugin folder
 }
 
 func main() {
@@ -56,6 +64,8 @@ func main() {
 		MessageOutPong:         filterMessageOutPong,
 	}
 
+	core.ConfigDefault = ConfigDefault
+
 	backend, status, err := core.Init(userAgent, configFile, filters, &config)
 
 	if status != core.ExitSuccess {
@@ -75,6 +85,8 @@ func main() {
 	}
 
 	backend.Stdout.Subscribe(os.Stdout)
+
+	update(backend)
 
 	startAPI(backend, apiListen, apiKey)
 
