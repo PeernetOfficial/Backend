@@ -41,16 +41,6 @@ var config struct {
 }
 
 func main() {
-	apiListen, apiKey, watchPID := parseCmdParams()
-
-	// Exit if the API is not specified via command-line and the config file.
-	// This is the backend and an API must be provided for a frontend.
-	// This behavior makes sure that if the user accidentally starts this executable, it will do nothing.
-	if len(apiListen) == 0 && len(config.APIListen) == 0 {
-		os.Exit(core.ExitParamWebapiInvalid)
-		return
-	}
-
 	userAgent := appName + "/" + core.Version
 
 	filters := &core.Filters{
@@ -82,6 +72,16 @@ func main() {
 			fmt.Printf("Unknown error %d initializing backend: %s\n", status, err.Error())
 		}
 		os.Exit(status)
+	}
+
+	apiListen, apiKey, watchPID := parseCmdParams()
+
+	// Exit if the API is not specified via command-line and the config file. This check must happen after the config was parsed.
+	// This is the backend and an API must be provided for a frontend.
+	// This behavior makes sure that if the user accidentally starts this executable, it will do nothing.
+	if len(apiListen) == 0 && len(config.APIListen) == 0 {
+		os.Exit(core.ExitParamWebapiInvalid)
+		return
 	}
 
 	backend.Stdout.Subscribe(os.Stdout)
